@@ -43,10 +43,19 @@ def getSizeWithMult(size):
 
 def getFileStats(file_path):
     name = file_path.split(os.path.sep)[-1]
-    stats = os.stat(file_path)
+    try:
+        stats = os.stat(file_path)
+    except:
+        return f"BAD NAMED FILE: {file_path}"
     size = getSizeWithMult(stats.st_size)
-    c_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stats.st_ctime))
-    m_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stats.st_mtime))
+    try:
+        c_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stats.st_ctime))
+    except:
+        c_time = "ERROR"
+    try:
+        m_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stats.st_mtime))
+    except:
+        m_time = "ERROR"
     extension = name.split('.')[-1].lower()
     type = 'other' if extension not in _file_types.keys() else _file_types[extension]
     return f"{name}  [{type} ({extension}); {size}; {m_time} (created {c_time})]"
@@ -55,7 +64,7 @@ def getFileStats(file_path):
 def generateFileList(dest_path, orig_path, filenames, stats=True):
     if len(filenames) == 0:
         return
-    with open(dest_path+"FileList.txt", "w") as file_list:
+    with open(dest_path+"FileList.txt", "w", encoding="utf-8") as file_list:
         for file in filenames:
             path = orig_path + file
             line = getFileStats(path) if stats else file
@@ -67,7 +76,7 @@ def generatePlaceholders(dest_path, orig_path, filenames, extensions=True, stats
     for file in filenames:
         path = orig_path + file
         line = getFileStats(path).split("[")[-1][:-1]
-        with open(dest_path+file, "w") as file_placeholder:
+        with open(dest_path+file, "w", encoding="utf-8") as file_placeholder:
             if stats:
                 file_placeholder.write(line+'\n')
             else:
@@ -84,10 +93,15 @@ if __name__ == '__main__':
     stats = '--stats' in sys.argv[3:]
     silent = '--silent' in sys.argv[3:]
 
+    ignore_folders = ["app data", "dati applicazioni", "program files", "programmi", "windows"]
+
     if dest[-1] != os.path.sep:
         dest += os.path.sep
 
     for (dirpath, dirnames, filenames) in os.walk(root):
+        if any(substring in dirpath.lower() for substring in ignore_folders):
+            print("IGNORED", dirpath)
+            continue
         if dirpath[-1] != os.path.sep:
             dirpath += os.path.sep
         dest_path = dest+dirpath[root_start:]
