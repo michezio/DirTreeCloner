@@ -26,7 +26,7 @@ _file_types = dict(
     archive = ['zip', 'rar', '7z', 'tar', 'gzip', 'gz'],
     executable = ['exe', 'bat', 'cmd', 'sh'])
 
-_file_types = {value: key for key in file_types for value in file_types[key]}
+_file_types = {value: key for key in _file_types for value in _file_types[key]}
 
 
 def getSizeWithMult(size):
