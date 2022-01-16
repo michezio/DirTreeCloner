@@ -19,12 +19,12 @@ import time
 
 
 _file_types = dict(
-    document = ['pdf', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'html', 'htm'],
-    picture = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'gif'],
-    audio = ['mp3', 'wav', 'flac', 'aac'],
-    video = ['mov', 'avi', 'mp4', 'm4v', 'mkv', 'flv', '3gp', 'dvx'],
-    archive = ['zip', 'rar', '7z', 'tar', 'gzip', 'gz'],
-    executable = ['exe', 'bat', 'cmd', 'sh'])
+    document = ['pdf', 'odt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'html', 'htm'],
+    picture = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'gif', 'webp', 'heif', 'svg'],
+    audio = ['mp3', 'wav', 'flac', 'aac', 'm4a', 'wma', 'aiff', 'ogg', 'opus'],
+    video = ['mov', 'avi', 'mp4', 'm4v', 'mkv', 'flv', '3gp', 'divx', 'webm', 'vob', 'wmv', 'm4v', 'mpeg', ],
+    archive = ['zip', 'rar', '7z', 'tar', 'gzip', 'gz', 'iso', 'img', 'bz2', 'lz', 'apk', 'cab', 'dd', 'dmg', 'jar', 'deb', 'pkg', 'rpm', 'msi'],
+    executable = ['exe', 'bat', 'cmd', 'sh', 'elf'])
 
 _file_types = {value: key for key in _file_types for value in _file_types[key]}
 
@@ -86,6 +86,7 @@ def generatePlaceholders(dest_path, orig_path, filenames, extensions=True, stats
 
 if __name__ == '__main__':
 
+    # TODO: USE ARGPARSE
     root = sys.argv[1]
     root_start = len(os.path.sep.join(root.split(os.path.sep)[:-1]))+1
     dest = sys.argv[2]
@@ -93,7 +94,9 @@ if __name__ == '__main__':
     stats = '--stats' in sys.argv[3:]
     silent = '--silent' in sys.argv[3:]
 
-    ignore_folders = ["app data", "dati applicazioni", "program files", "programmi", "windows"]
+    # TODO: PASS IGNORE_FOLDERS AS ARGUMENT
+    # TODO: SUPPORT REGEX (AS OPTIONAL FLAG)
+    ignore_folders = ["app data", "dati applicazioni", "c:\\program files", "c:\\programmi", "c:\\windows"]
 
     if dest[-1] != os.path.sep:
         dest += os.path.sep
